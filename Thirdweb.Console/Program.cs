@@ -329,7 +329,7 @@ var privateKeyWallet = await PrivateKeyWallet.Generate(client: client);
 
 #region InAppWallet - OAuth
 
-// var inAppWalletOAuth = await InAppWallet.Create(client: client, authProvider: AuthProvider.Coinbase);
+// var inAppWalletOAuth = await InAppWallet.Create(client: client, authProvider: AuthProvider.Github);
 // if (!await inAppWalletOAuth.IsConnected())
 // {
 //     _ = await inAppWalletOAuth.LoginWithOauth(
