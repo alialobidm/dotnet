@@ -1953,13 +1953,12 @@ public static class ThirdwebExtensions
     /// <param name="contract">The contract to interact with.</param>
     /// <param name="wallet">The wallet to use for the transaction.</param>
     /// <param name="receiverAddress">The address of the receiver.</param>
-    /// <param name="tokenId">The ID of the token.</param>
     /// <param name="uri">The URI of the token metadata.</param>
     /// <returns>A task representing the asynchronous operation, with a ThirdwebTransactionReceipt result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the contract or wallet is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the receiver address or URI is null or empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the token ID is less than 0.</exception>
-    public static async Task<ThirdwebTransactionReceipt> TokenERC721_MintTo(this ThirdwebContract contract, IThirdwebWallet wallet, string receiverAddress, BigInteger tokenId, string uri)
+    public static async Task<ThirdwebTransactionReceipt> TokenERC721_MintTo(this ThirdwebContract contract, IThirdwebWallet wallet, string receiverAddress, string uri)
     {
         if (contract == null)
         {
@@ -1976,12 +1975,7 @@ public static class ThirdwebExtensions
             throw new ArgumentException("Receiver address must be provided");
         }
 
-        if (tokenId < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(tokenId), "Token ID must be equal or greater than 0");
-        }
-
-        return uri == null ? throw new ArgumentException("URI must be provided") : await ThirdwebContract.Write(wallet, contract, "mintTo", 0, receiverAddress, tokenId, uri);
+        return uri == null ? throw new ArgumentException("URI must be provided") : await ThirdwebContract.Write(wallet, contract, "mintTo", 0, receiverAddress, uri);
     }
 
     /// <summary>
@@ -1990,13 +1984,12 @@ public static class ThirdwebExtensions
     /// <param name="contract">The contract to interact with.</param>
     /// <param name="wallet">The wallet to use for the transaction.</param>
     /// <param name="receiverAddress">The address of the receiver.</param>
-    /// <param name="tokenId">The ID of the token.</param>
     /// <param name="metadata">The metadata of the token.</param>
     /// <returns>A task representing the asynchronous operation, with a ThirdwebTransactionReceipt result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the contract or wallet is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the receiver address is null or empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the token ID is less than 0.</exception>
-    public static async Task<ThirdwebTransactionReceipt> TokenERC721_MintTo(this ThirdwebContract contract, IThirdwebWallet wallet, string receiverAddress, BigInteger tokenId, NFTMetadata metadata)
+    public static async Task<ThirdwebTransactionReceipt> TokenERC721_MintTo(this ThirdwebContract contract, IThirdwebWallet wallet, string receiverAddress, NFTMetadata metadata)
     {
         if (contract == null)
         {
@@ -2013,18 +2006,13 @@ public static class ThirdwebExtensions
             throw new ArgumentException("Receiver address must be provided");
         }
 
-        if (tokenId < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(tokenId), "Token ID must be equal or greater than 0");
-        }
-
         var json = JsonConvert.SerializeObject(metadata);
 
         var jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
 
         var ipfsResult = await ThirdwebStorage.UploadRaw(contract.Client, jsonBytes);
 
-        return await ThirdwebContract.Write(wallet, contract, "mintTo", 0, receiverAddress, tokenId, $"ipfs://{ipfsResult.IpfsHash}");
+        return await ThirdwebContract.Write(wallet, contract, "mintTo", 0, receiverAddress, $"ipfs://{ipfsResult.IpfsHash}");
     }
 
     /// <summary>
