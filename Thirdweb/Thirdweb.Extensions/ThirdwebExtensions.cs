@@ -1187,7 +1187,15 @@ public static class ThirdwebExtensions
         }
 
         var uri = await contract.ERC721_TokenURI(tokenId).ConfigureAwait(false);
-        var metadata = await ThirdwebStorage.Download<NFTMetadata>(contract.Client, uri).ConfigureAwait(false);
+        NFTMetadata metadata;
+        try
+        {
+            metadata = await ThirdwebStorage.Download<NFTMetadata>(contract.Client, uri).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            metadata = new NFTMetadata { Description = e.Message };
+        }
         metadata.Id = tokenId.ToString();
 
         string owner;
@@ -1324,7 +1332,15 @@ public static class ThirdwebExtensions
         }
 
         var uri = await contract.ERC1155_URI(tokenId).ConfigureAwait(false);
-        var metadata = await ThirdwebStorage.Download<NFTMetadata>(contract.Client, uri).ConfigureAwait(false);
+        NFTMetadata metadata;
+        try
+        {
+            metadata = await ThirdwebStorage.Download<NFTMetadata>(contract.Client, uri).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            metadata = new NFTMetadata { Description = e.Message };
+        }
         metadata.Id = tokenId.ToString();
         var owner = string.Empty;
         BigInteger supply;
