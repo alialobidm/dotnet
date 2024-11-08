@@ -312,6 +312,21 @@ public partial class EcosystemWallet : IThirdwebWallet
         return JsonConvert.DeserializeObject<EcosystemDetails>(content);
     }
 
+    public string GenerateExternalLoginLink(string redirectUrl)
+    {
+        var authProvider = HttpUtility.UrlEncode(this.AuthProvider.ToLower());
+        var walletId = this.GetType().Name.Contains("InAppWallet") ? "inApp" : this._ecosystemId;
+        var authCookie = HttpUtility.UrlEncode(this.EmbeddedWallet.GetSessionData()?.AuthToken ?? "");
+
+        if (string.IsNullOrEmpty(authCookie))
+        {
+            throw new InvalidOperationException("Cannot generate external login link without an active session.");
+        }
+
+        var queryString = redirectUrl.Contains('?') ? "&" : "?" + $"walletId={walletId}&authProvider={authProvider}&authCookie={authCookie}";
+        return $"{redirectUrl}{queryString}";
+    }
+
     #endregion
 
     #region Account Linking
